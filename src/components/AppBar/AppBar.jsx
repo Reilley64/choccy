@@ -11,7 +11,7 @@ const useStyles = createUseStyles((theme) => ({
     height: "64px",
     justifyContent: "center",
     padding: "20px",
-    position: "sticky",
+    position: "fixed",
     width: "100%",
     zIndex: "4",
   },

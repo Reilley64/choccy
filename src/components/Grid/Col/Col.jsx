@@ -1,20 +1,84 @@
 import React from "react";
 import { createUseStyles } from "react-jss";
 
-const useStyles = createUseStyles({
-  col: ({ size }) => ({
+const getProperties = ({ screenWidth, xs, sm, md, lg, xl }) => {
+  if (screenWidth >= 1920 && xl) {
+    return {
+      flex: `1 0 calc(100% / 12 * ${xl} - 24px)`,
+      margin: "24px 12px 0 12px",
+      maxWidth: `calc(100% / 12 * ${xl} - 24px)`,
+      minWidth: "calc(100% / 12 - 24px)",
+    };
+  }
+
+  if (screenWidth >= 1440 && lg) {
+    return {
+      flex: `1 0 calc(100% / 12 * ${lg} - 24px)`,
+      margin: "24px 12px 0 12px",
+      maxWidth: `calc(100% / 12 * ${lg} - 24px)`,
+      minWidth: "calc(100% / 12 - 24px)",
+    };
+  }
+
+  if (screenWidth >= 1024 && md) {
+    return {
+      flex: `1 0 calc(100% / 12 * ${md} - 24px)`,
+      margin: "24px 12px 0 12px",
+      maxWidth: `calc(100% / 12 * ${md} - 24px)`,
+      minWidth: "calc(100% / 12 - 24px)",
+    };
+  }
+
+  if (screenWidth >= 600 && sm) {
+    if (screenWidth >= 720) {
+      return {
+        flex: `1 0 calc(100% / 12 * ${sm} - 24px)`,
+        margin: "24px 12px 0 12px",
+        maxWidth: `calc(100% / 12 * ${sm} - 24px)`,
+        minWidth: "calc(100% / 12 - 24px)",
+      };
+    }
+
+    return {
+      flex: `1 0 calc(100% / 12 * ${sm} - 16px)`,
+      margin: "16px 8px 0 8px",
+      maxWidth: `calc(100% / 12 * ${sm} - 16px)`,
+      minWidth: "calc(100% / 12 - 16px)",
+    };
+  }
+
+  return {
+    flex: `1 0 calc(100% / 12 * ${xs} - 16px)`,
+    margin: "16px 8px 0 8px",
+    maxWidth: `calc(100% / 12 * ${xs} - 16px)`,
+    minWidth: "calc(100% / 12 - 16px)",
+  };
+};
+
+export const useStyles = createUseStyles({
+  col: ({ screenWidth, xs, sm, md, lg, xl }) => ({
     alignSelf: "stretch",
-    flex: `1 0 calc(100% / 12 * ${size} - 24px)`,
-    margin: "24px 12px 0 12px",
-    maxWidth: `calc(100% / 12 * ${size} - 24px)`,
-    minWidth: "calc(100% / 12 - 24px)",
     overflowWrap: "break-word",
-    transition: "max-width 250ms cubic-bezier(.4, 0, .2, 1)",
+    ...getProperties({
+      screenWidth,
+      xs,
+      sm,
+      md,
+      lg,
+      xl,
+    }),
   }),
 });
 
-const Col = ({ children, size }) => {
-  const classes = useStyles({ size });
+const Col = ({ children, xs, sm, md, lg, xl }) => {
+  const classes = useStyles({
+    screenWidth: window.innerWidth,
+    xs,
+    sm,
+    md,
+    lg,
+    xl,
+  });
 
   return <div className={classes.col}>{children}</div>;
 };

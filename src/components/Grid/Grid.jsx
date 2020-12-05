@@ -1,21 +1,38 @@
 import React from "react";
 import { createUseStyles } from "react-jss";
 
+const getProperties = ({ screenWidth }) => {
+  if (screenWidth >= 720) {
+    return {
+      marginTop: "-24px",
+      padding: "24px 12px",
+    };
+  }
+
+  return {
+    marginTop: "-16px",
+    padding: "16px 8px",
+  };
+};
+
 const useStyles = createUseStyles({
-  grid: {
+  grid: ({ screenWidth }) => ({
     alignItems: "flex-start",
     display: "flex",
     flexWrap: "wrap",
-    margin: "-24px 0 0 0",
-    padding: "24px 12px",
     position: "relative",
-  },
+    ...getProperties({ screenWidth }),
+  }),
 });
 
-const Grid = ({ children }) => {
-  const classes = useStyles();
+const Grid = ({ children, style }) => {
+  const classes = useStyles({ screenWidth: window.innerWidth });
 
-  return <div className={classes.grid}>{children}</div>;
+  return (
+    <div className={classes.grid} style={style}>
+      {children}
+    </div>
+  );
 };
 
 export default Grid;

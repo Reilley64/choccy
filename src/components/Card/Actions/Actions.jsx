@@ -4,7 +4,6 @@ import { createUseStyles } from "react-jss";
 const useStyles = createUseStyles({
   actions: {
     alignItems: "center",
-    boxSizing: "border-box",
     display: "flex",
     flexDirection: "row",
     minHeight: "52px",
@@ -12,10 +11,14 @@ const useStyles = createUseStyles({
   },
 });
 
-const Actions = ({ children }) => {
+const Actions = ({ children, style }) => {
   const classes = useStyles();
 
-  return <div className={classes.actions}>{children}</div>;
+  return (
+    <div className={classes.actions} style={style}>
+      {children}
+    </div>
+  );
 };
 
 export default Actions;
