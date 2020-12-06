@@ -11,10 +11,14 @@ const useStyles = createUseStyles({
   },
 });
 
-const Body = ({ children }) => {
+const Body = ({ children, style }) => {
   const classes = useStyles();
 
-  return <div className={classes.body}>{children}</div>;
+  return (
+    <div className={classes.body} style={style}>
+      {children}
+    </div>
+  );
 };
 
 export default Body;

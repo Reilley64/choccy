@@ -3,16 +3,10 @@ import { createUseStyles } from "react-jss";
 
 const getProperties = ({ screenWidth }) => {
   if (screenWidth >= 720) {
-    return {
-      marginTop: "-24px",
-      padding: "24px 12px",
-    };
+    return "-24px -12px 0";
   }
 
-  return {
-    marginTop: "-16px",
-    padding: "16px 8px",
-  };
+  return "-16px -8px 0";
 };
 
 const useStyles = createUseStyles({
@@ -20,8 +14,8 @@ const useStyles = createUseStyles({
     alignItems: "flex-start",
     display: "flex",
     flexWrap: "wrap",
+    margin: getProperties({ screenWidth }),
     position: "relative",
-    ...getProperties({ screenWidth }),
   }),
 });
 

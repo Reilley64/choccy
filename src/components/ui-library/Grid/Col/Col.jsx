@@ -47,6 +47,15 @@ const getProperties = ({ screenWidth, xs, sm, md, lg, xl }) => {
     };
   }
 
+  if (screenWidth >= 720) {
+    return {
+      flex: `1 0 calc(100% / 12 * ${xs} - 24px)`,
+      margin: "24px 12px 0 12px",
+      maxWidth: `calc(100% / 12 * ${xs} - 24px)`,
+      minWidth: "calc(100% / 12 - 24px)",
+    };
+  }
+
   return {
     flex: `1 0 calc(100% / 12 * ${xs} - 16px)`,
     margin: "16px 8px 0 8px",

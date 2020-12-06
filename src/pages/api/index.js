@@ -4,15 +4,16 @@ import knex from "knex";
 const database = knex({
   client: "pg",
   connection: {
-    host: "localhost",
-    user: "reilley",
-    password: "darkrai12",
-    database: "reilley",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   },
 });
 
 const typeDefs = gql`
   type Query {
+    brand(id: Int!): Brand
     brands: [Brand!]!
   }
   type Brand {
@@ -20,6 +21,8 @@ const typeDefs = gql`
     name: String!
     company: String!
     image: String!
+    ingredients: String!
+    website: String!
     likes: [Like!]!
   }
   type Like {
@@ -28,7 +31,13 @@ const typeDefs = gql`
     brand: Brand!
   }
   type Mutation {
-    createBrand(name: String!, image: String!): Brand
+    createBrand(
+      name: String!
+      company: String!
+      image: String!
+      ingredients: String!
+      website: String!
+    ): Brand
     createLike(ip: String!, brand_id: Int!): Like
     deleteLike(id: Int!): Int
   }
@@ -36,27 +45,28 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    brands: () => database("choccy.brand").select("*"),
+    brand: (parent, { id }) => database(`${process.env.DB_SCHEMA}.brand`).where("id", id).first(),
+    brands: () => database(`${process.env.DB_SCHEMA}.brand`).select("*"),
   },
   Brand: {
     likes: ({ id }) =>
-      database("choccy.like").where("brand_id", id).select("*"),
+      database(`${process.env.DB_SCHEMA}.like`).where("brand_id", id).select("*"),
   },
   Mutation: {
-    createBrand: async (_, { name, company, image }) => {
-      const [brand] = await database("choccy.brand")
+    createBrand: async (_, newBrand) => {
+      const [brand] = await database(`${process.env.DB_SCHEMA}.brand`)
         .returning("*")
-        .insert({ name, company, image });
+        .insert(newBrand);
       return brand;
     },
-    createLike: async (_, { ip, brand_id }) => {
-      const [like] = await database("choccy.like")
+    createLike: async (_, newLike) => {
+      const [like] = await database(`${process.env.DB_SCHEMA}.like`)
         .returning("*")
-        .insert({ ip, brand_id });
+        .insert(newLike);
       return like;
     },
     deleteLike: async (_, { id }) => {
-      await database("choccy.like").where("id", id).delete();
+      await database(`${process.env.DB_SCHEMA}.like`).where("id", id).delete();
       return id;
     },
   },

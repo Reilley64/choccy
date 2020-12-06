@@ -1,8 +1,9 @@
+import { MdAdd } from "@react-icons/all-files/md/MdAdd";
 import Color from "color";
 import React from "react";
 import { createUseStyles } from "react-jss";
 
-import { theme } from "../../pages/_app";
+import { theme } from "../../../pages/_app";
 import Typography from "../Typography";
 
 const getStyles = ({ variant, theme }) => {
@@ -107,11 +108,16 @@ const useStyles = createUseStyles((theme) => ({
   }),
 }));
 
-const Button = ({ children, onClick, style, variant }) => {
+const Button = ({ children, onClick, style, type = "button", variant }) => {
   const classes = useStyles({ variant });
 
   return (
-    <button className={classes.button} onClick={onClick} style={style}>
+    <button
+      className={classes.button}
+      onClick={onClick}
+      style={style}
+      type={type}
+    >
       {variant === "icon" ? (
         children
       ) : (

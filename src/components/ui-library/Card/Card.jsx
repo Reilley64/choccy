@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 import { createUseStyles } from "react-jss";
 
@@ -10,13 +11,18 @@ const useStyles = createUseStyles({
     display: "flex",
     flexDirection: "column",
     position: "relative",
+    transition: "box-shadow 150ms cubic-bezier(.4, 0, .2, 1)",
   },
 });
 
-const Card = ({ children }) => {
+const Card = ({ children, className, style, ...props }) => {
   const classes = useStyles();
 
-  return <div className={classes.card}>{children}</div>;
+  return (
+    <div className={clsx(classes.card, className)} style={style} {...props}>
+      {children}
+    </div>
+  );
 };
 
 export default Card;

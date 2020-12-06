@@ -142,6 +142,7 @@ const useStyles = createUseStyles((theme) => ({
     fontSize: size || getSize(type, level),
     fontWeight: weight || getWeight(type, level),
     letterSpacing: spacing || getLetterSpacing(type, level),
+    textDecoration: "none !important",
   }),
 }));
 
