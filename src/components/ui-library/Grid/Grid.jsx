@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 
 const getProperties = ({ screenWidth }) => {
@@ -20,9 +20,19 @@ const useStyles = createUseStyles({
 });
 
 const Grid = ({ children, style }) => {
+  const [screenWidth, setScreenWidth] = useState(0);
+
   const classes = useStyles({
-    screenWidth: typeof window !== "undefined" ? window.innerWidth : 0,
+    screenWidth,
   });
+
+  useLayoutEffect(() => {
+    const updateScreenWidth = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", updateScreenWidth);
+    updateScreenWidth();
+
+    return () => window.removeEventListener("resize", updateScreenWidth);
+  }, []);
 
   return (
     <div className={classes.grid} style={style}>

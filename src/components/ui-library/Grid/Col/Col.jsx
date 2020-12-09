@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 
 const getProperties = ({ screenWidth, xs, sm, md, lg, xl }) => {
@@ -80,14 +80,24 @@ export const useStyles = createUseStyles({
 });
 
 const Col = ({ children, xs, sm, md, lg, xl }) => {
+  const [screenWidth, setScreenWidth] = useState(0);
+
   const classes = useStyles({
-    screenWidth: typeof window !== "undefined" ? window.innerWidth : 0,
+    screenWidth,
     xs,
     sm,
     md,
     lg,
     xl,
   });
+
+  useLayoutEffect(() => {
+    const updateScreenWidth = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", updateScreenWidth);
+    updateScreenWidth();
+
+    return () => window.removeEventListener("resize", updateScreenWidth);
+  }, []);
 
   return <div className={classes.col}>{children}</div>;
 };

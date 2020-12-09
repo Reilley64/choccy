@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import Button from "../../ui-library/Button/Button";
@@ -38,37 +38,40 @@ const CreateBrandMutation = gql`
   }
 `;
 
-const NewMilkModal = () => {
+const NewBrandModal = () => {
   const [newMilkModalOpen, setNewMilkModalOpen] = useState(false);
 
-  const [createBrand, { data, loading: createBrandLoading }] = useMutation(CreateBrandMutation, {
-    update(cache, { data: { createBrand } }) {
-      cache.modify({
-        fields: {
-          brands(existingBrands = []) {
-            const newBrandRef = cache.writeFragment({
-              data: createBrand,
-              fragment: gql`
-                fragment NewBrand on Brand {
-                  id
-                  name
-                  company
-                  image
-                  ingredients
-                  website
-                  likes {
+  const [createBrand, { data, loading: createBrandLoading }] = useMutation(
+    CreateBrandMutation,
+    {
+      update(cache, { data: { createBrand } }) {
+        cache.modify({
+          fields: {
+            brands(existingBrands = []) {
+              const newBrandRef = cache.writeFragment({
+                data: createBrand,
+                fragment: gql`
+                  fragment NewBrand on Brand {
                     id
-                    ip
+                    name
+                    company
+                    image
+                    ingredients
+                    website
+                    likes {
+                      id
+                      ip
+                    }
                   }
-                }
-              `,
-            });
-            return [...existingBrands, newBrandRef];
+                `,
+              });
+              return [...existingBrands, newBrandRef];
+            },
           },
-        },
-      });
-    },
-  });
+        });
+      },
+    }
+  );
 
   const { handleSubmit, register, reset, watch } = useForm();
 
@@ -81,7 +84,7 @@ const NewMilkModal = () => {
     if (data && !createBrandLoading) {
       close();
     }
-  }, [data, createBrandLoading])
+  }, [data, createBrandLoading]);
 
   const onSubmit = (values) => createBrand({ variables: values });
 
@@ -90,7 +93,6 @@ const NewMilkModal = () => {
       <Card
         style={{
           alignItems: "center",
-          cursor: "pointer",
           height: "100%",
           minHeight: "319.617px",
           justifyContent: "center",
@@ -177,4 +179,4 @@ const NewMilkModal = () => {
   );
 };
 
-export default NewMilkModal;
+export default memo(NewBrandModal);

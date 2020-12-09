@@ -1,6 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import React from "react";
 
 import { initializeApollo } from "../../apollo/client";
 import BrandTemplate from "../../components/Templates/BrandTemplate";

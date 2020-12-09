@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import publicIp from "public-ip";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { initializeApollo } from "../apollo/client";
 import HomeTemplate from "../components/Templates/HomeTemplate";

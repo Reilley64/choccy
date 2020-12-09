@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 
 import Grid from "../ui-library/Grid";
 import Typography from "../ui-library/Typography";
@@ -36,4 +36,4 @@ const BrandTemplate = ({ brand }) => (
   </Grid>
 );
 
-export default BrandTemplate;
+export default memo(BrandTemplate);
