@@ -5,7 +5,10 @@ import Typography from "../ui-library/Typography";
 
 const BrandTemplate = ({ brand }) => (
   <Grid>
-    <Grid.Col xs={6}>
+    <Grid.Col xs={12} md={6}>
+      <img alt={brand.name} src={brand.image} style={{ width: "100%" }} />
+    </Grid.Col>
+    <Grid.Col xs={12} md={6}>
       <Grid>
         <Grid.Col xs={12}>
           <Typography level={2} type="headline">
@@ -29,9 +32,6 @@ const BrandTemplate = ({ brand }) => (
           </a>
         </Grid.Col>
       </Grid>
-    </Grid.Col>
-    <Grid.Col xs={6}>
-      <img alt={brand.name} src={brand.image} style={{ width: "100%" }} />
     </Grid.Col>
   </Grid>
 );
