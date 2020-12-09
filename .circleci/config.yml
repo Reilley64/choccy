@@ -13,7 +13,9 @@ jobs:
     docker:
       - image: 'circleci/python'
     steps:
+      - run: pip install awscli
       - run: pip install awsebcli
+      - run: aws configure set region ap-southeast-2
       - run: eb use Choccy-env
       - run: eb deploy
 
