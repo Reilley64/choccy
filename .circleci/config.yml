@@ -1,13 +1,18 @@
 version: 2.1
 jobs:
+  build:
+    working_directory: ~/project
+    docker:
+        - image: 'circleci/node'
+    steps:
+      - checkout
+      - run: yarn install
+      - run: yarn build
   deploy:
     working_directory: ~/project
     docker:
       - image: 'circleci/node'
     steps:
-      - checkout
-      - run: yarn install
-      - run: yarn build
       - run: sudo apt install -y python
       - run: pip install awsebcli
       - run: eb use Choccy-env
