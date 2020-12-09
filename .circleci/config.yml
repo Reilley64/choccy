@@ -33,6 +33,14 @@ workflows:
   workflow:
     jobs:
       - build
+      - hold:
+          filters:
+            branches:
+              only:
+                - main
+          type: approval
+          required:
+            - build
       - deploy:
           requires:
-            - build
+            - hold
