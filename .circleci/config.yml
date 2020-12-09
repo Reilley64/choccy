@@ -39,7 +39,7 @@ workflows:
               only:
                 - main
           type: approval
-          required:
+          requires:
             - build
       - deploy:
           requires:
