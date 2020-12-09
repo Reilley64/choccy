@@ -1,0 +1,26 @@
+version: 2.1
+jobs:
+  deploy:
+    working_directory: ~/project
+    docker:
+      - image: 'circleci/node'
+    steps:
+      - checkout
+      - run:
+          name: 'Install dependencies'
+          command: yarn install
+      - run:
+          name: 'Build application'
+          command: yarn build
+      - run:
+          name: 'Install python'
+          commands: sudo apt install -y python
+      - run:
+          name: 'Install AWS EB CLI'
+          commands: pip install awsebcli
+      - run:
+          name: 'Use elastic beanstalk environment'
+          commands: eb use Choccy-env
+      - run:
+          name: 'Deploy to elastic beanstalk'
+          commands: eb deploy
