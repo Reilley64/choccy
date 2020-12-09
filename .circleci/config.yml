@@ -17,3 +17,9 @@ jobs:
       - run: pip install awsebcli
       - run: eb use Choccy-env
       - run: eb deploy
+
+workflows:
+  workflow:
+    jobs:
+      - build
+      - deploy
