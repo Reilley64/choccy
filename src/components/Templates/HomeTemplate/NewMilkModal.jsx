@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { gql, useMutation } from "@apollo/client";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import Button from "../../ui-library/Button/Button";
@@ -8,8 +9,66 @@ import Modal from "../../ui-library/Modal/Modal";
 import TextField from "../../ui-library/TextField/TextField";
 import Typography from "../../ui-library/Typography";
 
-const NewMilkModal = ({ mutate }) => {
+const CreateBrandMutation = gql`
+  mutation CreateBrandMutation(
+    $name: String!
+    $company: String!
+    $image: String!
+    $ingredients: String!
+    $website: String!
+  ) {
+    createBrand(
+      name: $name
+      company: $company
+      image: $image
+      ingredients: $ingredients
+      website: $website
+    ) {
+      id
+      name
+      company
+      image
+      ingredients
+      website
+      likes {
+        id
+        ip
+      }
+    }
+  }
+`;
+
+const NewMilkModal = () => {
   const [newMilkModalOpen, setNewMilkModalOpen] = useState(false);
+
+  const [createBrand, { data, loading: createBrandLoading }] = useMutation(CreateBrandMutation, {
+    update(cache, { data: { createBrand } }) {
+      cache.modify({
+        fields: {
+          brands(existingBrands = []) {
+            const newBrandRef = cache.writeFragment({
+              data: createBrand,
+              fragment: gql`
+                fragment NewBrand on Brand {
+                  id
+                  name
+                  company
+                  image
+                  ingredients
+                  website
+                  likes {
+                    id
+                    ip
+                  }
+                }
+              `,
+            });
+            return [...existingBrands, newBrandRef];
+          },
+        },
+      });
+    },
+  });
 
   const { handleSubmit, register, reset, watch } = useForm();
 
@@ -18,20 +77,13 @@ const NewMilkModal = ({ mutate }) => {
     reset();
   };
 
-  const onSubmit = (values) => {
-    fetch("/api", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        query: `mutation { createBrand(name: "${values.name}", company: "${values.company}", image: "${values.image}", ingredients: "${values.ingredients}", website: "${values.website}" ) { id } }`,
-      }),
-    }).then(() => {
-      mutate();
+  useEffect(() => {
+    if (data && !createBrandLoading) {
       close();
-    });
-  };
+    }
+  }, [data, createBrandLoading])
+
+  const onSubmit = (values) => createBrand({ variables: values });
 
   return (
     <>

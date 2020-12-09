@@ -20,7 +20,9 @@ const useStyles = createUseStyles({
 });
 
 const Grid = ({ children, style }) => {
-  const classes = useStyles({ screenWidth: window.innerWidth });
+  const classes = useStyles({
+    screenWidth: typeof window !== "undefined" ? window.innerWidth : 0,
+  });
 
   return (
     <div className={classes.grid} style={style}>

@@ -81,7 +81,7 @@ export const useStyles = createUseStyles({
 
 const Col = ({ children, xs, sm, md, lg, xl }) => {
   const classes = useStyles({
-    screenWidth: window.innerWidth,
+    screenWidth: typeof window !== "undefined" ? window.innerWidth : 0,
     xs,
     sm,
     md,

@@ -1,4 +1,6 @@
+import { gql, useMutation } from "@apollo/client";
 import { MdThumbUp } from "@react-icons/all-files/md/MdThumbUp";
+import findIndex from "lodash/findIndex";
 import Link from "next/link";
 import React from "react";
 
@@ -9,11 +11,71 @@ import Grid from "../../ui-library/Grid";
 import Typography from "../../ui-library/Typography";
 import NewMilkModal from "./NewMilkModal";
 
-const HomeTemplate = ({ data, ip, mutate }) => {
+const BrandsQuery = gql`
+  {
+    brands {
+      id
+      name
+      company
+      image
+      likes {
+        id
+        ip
+      }
+    }
+  }
+`;
+
+const CreateLikeMutation = gql`
+  mutation CreateLikeMutation($ip: String!, $brand: Int!) {
+    createLike(ip: $ip, brand: $brand) {
+      id
+      ip
+      brand {
+        id
+      }
+    }
+  }
+`;
+
+const DeleteLikeMutation = gql`
+  mutation DeleteLikeMutation($id: Int!) {
+    deleteLike(id: $id) {
+      id
+      brand {
+        id
+      }
+    }
+  }
+`;
+
+const HomeTemplate = ({ brands, ip }) => {
+  const [createLike] = useMutation(CreateLikeMutation, {
+    update(cache, { data: { createLike } }) {
+      const data = cache.readQuery({ query: BrandsQuery });
+      let brands = JSON.parse(JSON.stringify(data.brands));
+      const index = findIndex(brands, ["id", createLike.brand.id]);
+      brands[index].likes.push(createLike);
+      cache.writeQuery({ query: BrandsQuery, data: { brands } });
+    },
+  });
+  const [deleteLike] = useMutation(DeleteLikeMutation, {
+    update(cache, { data: { deleteLike } }) {
+      const data = cache.readQuery({ query: BrandsQuery });
+      let brands = JSON.parse(JSON.stringify(data.brands));
+      const brandIndex = findIndex(brands, ["id", deleteLike.brand.id]);
+      const likeIndex = findIndex(brands[brandIndex].likes, [
+        "id",
+        deleteLike.id,
+      ]);
+      delete brands[brandIndex].likes[likeIndex];
+      cache.writeQuery({ query: BrandsQuery, data: { brands } });
+    },
+  });
+
   return (
     <Grid>
-      {data.brands
-        .sort((a, b) => b.likes.length - a.likes.length)
+      {brands
         .map((brand) => (
           <Grid.Col key={brand.id} xs={12} md={4} lg={3}>
             <Card>
@@ -33,47 +95,37 @@ const HomeTemplate = ({ data, ip, mutate }) => {
                     <Button variant="text">View</Button>
                   </a>
                 </Link>
-                <Button
-                  onClick={() =>
-                    brand.likes.some((like) => like.ip === ip)
-                      ? fetch("/api", {
-                          method: "POST",
-                          headers: {
-                            "Content-type": "application/json",
-                          },
-                          body: JSON.stringify({
-                            query: `mutation { deleteLike(id: ${
-                              brand.likes.filter((like) => like.ip === ip)[0].id
-                            }) }`,
-                          }),
-                        }).then(() => mutate())
-                      : fetch("/api", {
-                          method: "POST",
-                          headers: {
-                            "Content-type": "application/json",
-                          },
-                          body: JSON.stringify({
-                            query: `mutation { createLike(ip: "${ip}", brand_id: ${brand.id}) { id, ip } }`,
-                          }),
-                        }).then(() => mutate())
-                  }
-                  style={{ marginLeft: "auto" }}
-                  variant="icon"
-                >
-                  <MdThumbUp
-                    style={{
-                      color: brand.likes.some((like) => like.ip === ip)
-                        ? theme.palette.primary
-                        : "rgba(0, 0, 0, .6)",
-                    }}
-                  />
-                </Button>
+                {Array.isArray(brand.likes) && (
+                  <Button
+                    onClick={() =>
+                      brand.likes.some((like) => like.ip === ip)
+                        ? deleteLike({
+                            variables: {
+                              id: brand.likes.filter(
+                                (like) => like.ip === ip
+                              )[0].id,
+                            },
+                          })
+                        : createLike({ variables: { ip: ip, brand: brand.id } })
+                    }
+                    style={{ marginLeft: "auto" }}
+                    variant="icon"
+                  >
+                    <MdThumbUp
+                      style={{
+                        color: brand.likes.some((like) => like.ip === ip)
+                          ? theme.palette.primary
+                          : "rgba(0, 0, 0, .6)",
+                      }}
+                    />
+                  </Button>
+                )}
               </Card.Actions>
             </Card>
           </Grid.Col>
         ))}
       <Grid.Col xs={12} md={4} lg={3}>
-        <NewMilkModal mutate={mutate} />
+        <NewMilkModal />
       </Grid.Col>
     </Grid>
   );
