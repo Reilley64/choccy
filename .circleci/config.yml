@@ -1,22 +1,32 @@
 version: 2.1
 jobs:
   build:
-    working_directory: ~/project
     docker:
         - image: 'circleci/node'
     steps:
       - checkout
+      - restore_cache:
+          name: Restore yarn package cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
       - run: yarn install
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
       - run: yarn build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   deploy:
-    working_directory: ~/project
     docker:
       - image: 'circleci/python'
     steps:
-      - run: pip install awscli
+      - attach_workspace:
+          at: .
       - run: pip install awsebcli
-      - run: aws configure set region ap-southeast-2
-      - run: eb use Choccy-env
       - run: eb deploy
 
 workflows:
