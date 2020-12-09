@@ -1,5 +1,6 @@
 /.circleci
 /.elasticbeanstalk
+/.git
 node_modules
 public
 src

@@ -47,7 +47,7 @@ const DeleteLikeMutation = gql`
   }
 `;
 
-const Brand = ({ value }) => {
+const Brand = ({ ip, value }) => {
   const [createLike] = useMutation(CreateLikeMutation, {
     update(cache, { data: { createLike } }) {
       const data = cache.readQuery({ query: BrandsQuery });
