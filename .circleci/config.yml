@@ -11,9 +11,8 @@ jobs:
   deploy:
     working_directory: ~/project
     docker:
-      - image: 'circleci/node'
+      - image: 'circleci/python'
     steps:
-      - run: sudo apt install -y python
       - run: pip install awsebcli
       - run: eb use Choccy-env
       - run: eb deploy
@@ -22,4 +21,6 @@ workflows:
   workflow:
     jobs:
       - build
-      - deploy
+      - deploy:
+          requires:
+            - build
