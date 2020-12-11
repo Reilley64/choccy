@@ -130,6 +130,7 @@ const useStyles = createUseStyles((theme) => ({
   typography: ({
     color,
     disabled,
+    fontFamily,
     level,
     muted,
     size,
@@ -138,7 +139,7 @@ const useStyles = createUseStyles((theme) => ({
     weight,
   }) => ({
     color: color || getColor(muted, disabled),
-    fontFamily: theme.font.family,
+    fontFamily: fontFamily || theme.font.family,
     fontSize: size || getSize(type, level),
     fontWeight: weight || getWeight(type, level),
     letterSpacing: spacing || getLetterSpacing(type, level),
@@ -150,6 +151,7 @@ const Typography = ({
   color,
   children,
   disabled,
+  fontFamily,
   level,
   muted,
   size,
@@ -161,6 +163,7 @@ const Typography = ({
   const classes = useStyles({
     color,
     disabled,
+    fontFamily,
     level,
     muted,
     size,

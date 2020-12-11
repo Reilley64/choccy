@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { ThemeProvider } from "react-jss";
 import "sanitize.css";
+import "typeface-permanent-marker";
 import "typeface-roboto";
 
 import { useApollo } from "../apollo/client";
@@ -34,7 +35,8 @@ const MyApp = ({ Component, pageProps }) => {
               <Link href={"/"}>
                 <a style={{ textDecoration: "none" }}>
                   <Typography
-                    color={"rgb(255, 255, 255)"}
+                    color={theme.palette.primary}
+                    fontFamily={"Permanent Marker"}
                     level={6}
                     spacing={"0.25px"}
                     type={"headline"}
